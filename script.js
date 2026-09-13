@@ -63,3 +63,70 @@ if (window.matchMedia('(pointer:fine)').matches) {
     });
   });
 }
+
+
+// KOGNITIV PUBLIC TEAM SYNC
+document.addEventListener('DOMContentLoaded', async () => {
+  const grid = document.getElementById('teamGrid');
+  if (!grid) return;
+
+  try {
+    const response = await fetch(`team.json?v=${Date.now()}`, {
+      cache: 'no-store'
+    });
+
+    if (!response.ok) {
+      throw new Error(`team.json returned ${response.status}`);
+    }
+
+    const team = await response.json();
+
+    if (!Array.isArray(team)) {
+      throw new Error('Invalid team data');
+    }
+
+    const members = [...team].sort(
+      (a, b) => Number(a.order || 999) - Number(b.order || 999)
+    );
+
+    grid.innerHTML = '';
+
+    members.forEach((member, index) => {
+      const article = document.createElement('article');
+      article.className = 'team-card reveal in-view';
+
+      if ((member.category || '').toUpperCase() === 'FOUNDER / OWNER') {
+        article.classList.add('founder');
+      }
+
+      const meta = document.createElement('div');
+      meta.className = 'team-meta';
+      meta.textContent = member.category || 'TEAM';
+
+      const number = document.createElement('div');
+      number.className = 'team-number';
+      number.textContent = String(index + 1).padStart(2, '0');
+
+      const person = document.createElement('div');
+      person.className = 'team-person';
+
+      const name = document.createElement('h3');
+      name.textContent = String(member.name || '').toUpperCase();
+
+      const role = document.createElement('p');
+      role.textContent = member.role || '';
+
+      const specialties = document.createElement('span');
+      specialties.textContent = member.specialties || '';
+
+      person.append(name, role, specialties);
+      article.append(meta, number, person);
+      grid.appendChild(article);
+    });
+
+  } catch (error) {
+    // Keep the static HTML team cards as a safe fallback.
+    console.warn('Kognitiv team sync unavailable:', error);
+  }
+});
+
