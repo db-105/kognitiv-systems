@@ -5,12 +5,5 @@
     "category": "FOUNDER / OWNER",
     "specialties": "Product · AI Systems · Vision",
     "order": 1
-  },
-  {
-    "name": "Lukas Berisha",
-    "role": "Software Engineer",
-    "category": "ENGINEERING",
-    "specialties": "Development · Systems · Implementation",
-    "order": 2
   }
 ]
